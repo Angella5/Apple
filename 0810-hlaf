@@ -1,7 +1,4 @@
 https://blog.techbridge.cc/2019/07/26/how-to-use-taiwan-salary-data-to-do-python-data-analytics-and-data-visualization/
-import pandas as pd
-import matplotlib.pyplot as plt
-
 A = pd.read_csv('108N1.csv')
 #df_otc = pd.read_csv('108_otc.csv')
 headers = ['industry','company_code', 'company_name',  'company_people_count','average_salary2019', 'average_salary2018', 'company_eps']
@@ -32,23 +29,26 @@ print ('中国啤酒消费量: ', china_beer)
 print ('中国啤酒消费在亚洲排名: ', (drinks[drinks.continent == 'AS'].beer_servings > china_beer).sum()+1, '/', drinks[drinks.continent == 'AS'].beer_servings.count())
 print ('中国啤酒消费在全球排名: ', (drinks['beer_servings'] > china_beer).sum()+1 , '/', drinks['beer_servings'].count())'''
 
-#畫圖 前10大薪資2018 與2019年薪資差異 長條圖
-ASem = A[A['industry'].isin(['半導體業'])].head(10)
+#畫圖 前10大薪資2018 與2019年薪資差異 長條圖 還不會
+'''ASem = A[A['industry'].isin(['半導體業'])].head(10)
 Ax=ASem['company_code'] #長條圖的x軸
 Ay1=ASem['average_salary2019'] #長條圖的y1軸
 Ay2=ASem['average_salary2018'] #長條圖的y2軸
 Ay2 = Ay2.astype('int64')
-#ASem.average_salary2019 = pd.to_numeric(ASem.average_salary2019)
-#ASem.loc[:, ['company_code', 'average_salary2019']].plot(kind='bar', x='company_code', y='average_salary2019', title ="Salary_Semiconductor", figsize=(15, 10), legend=True, fontsize=12)
+ASem.average_salary2019 = pd.to_numeric(ASem.average_salary2019)
+ASem.loc[:, ['company_code', 'average_salary2019']].plot(kind='bar', x='company_code', y='average_salary2019', title ="Salary_Semiconductor", figsize=(15, 10), legend=True, fontsize=12)'''
 
-width=2
+'''
 plt.xlabel('Company_code')
 plt.ylabel('average_salary')
-plt.title('Semiconductor_salary')
-plt.bar([i-width/2 for i in Ax], Ay1, width=width, label='2019')
-plt.bar([i-width/2 for i in Ax], Ay2, width=width, label='2018')
+plt.title('Semiconductor_salary_Top10')
+
+width = 0.4 #先設定每個長條的寬度
+plt.bar(Ax, Ay1, width=width, label='2019') 
+
+
 plt.legend()
-plt.show()
+plt.show()'''
 
 #ZZ = A[A['industry'].isin(['觀光業'])].head(10)
 #ZX=ZZ['company_code']
@@ -61,10 +61,37 @@ AX=ASem['company_code']
 ASem.average_salary2019 = pd.to_numeric(ASem.average_salary2019)
 ASem.loc[:, ['company_code', 'average_salary2019']].plot(kind='bar', x='company_code', y='average_salary2019', title ="Salary_Semiconductor", figsize=(15, 10), legend=True, fontsize=12)'''
 
+'''66 行到 87 行好了 註解起來
+#畫scatter 查看薪資與公司盈餘
+A.sort_values(['company_eps'], ascending=False).head(10)
+B=A.drop(A.index[54]) # 其中將很大的大立光先刪除
 
-#畫圖 前10大薪資2019年薪資差異 圓餅圖
-'''
-A.sort_values(['company_eps'], ascending=False).head(5)
-A.drop(A.index[54])
+#另一種化散布圖的方式
+#Sx=B['company_eps']
+#Sy=B['average_salary2019']
+#plt.scatter(Sx,Sy)
+#plt.show()
 
-A.plot(kind='scatter', x='company_eps', y='company_average_salary')'''
+B = B[['average_salary2019', 'company_eps']]
+B.plot(kind='scatter', x='company_eps', y='average_salary2019') 
+
+#確認公司EPS與薪資關係
+B_r=B.corr(method ='pearson')
+
+print('The Pearson correlation coefficient is:\n', B_r.iloc[0,1])
+print('')
+if B_r.iloc[0,1] < 0.3:
+    print('low relation')
+elif B_r.iloc[0,1] >=0.3 and B_r.iloc[0,1] < 0.7:
+    print('medium relation')
+elif B_r.iloc[0,1] >=0.7:
+    print('high relation')'''
+    
+
+
+
+'''Pearson correlation coefficient 
+皮爾森相關分析用於探討兩連續變數 (X, Y) 之間的線性相關性，
+若兩變數之間的相關係數絕對值較大，則表示彼此相互共變的程度較大。
+一般而言，若兩變數之間為正相關，則當 X 提升時，Y 也會隨之提升；
+一般研究學者認為，相關係數 0.3 以下為低相關，0.3-0.7 為中等相關，0.7 以上為高度相關。'''
