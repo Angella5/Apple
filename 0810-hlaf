@@ -1,0 +1,70 @@
+https://blog.techbridge.cc/2019/07/26/how-to-use-taiwan-salary-data-to-do-python-data-analytics-and-data-visualization/
+import pandas as pd
+import matplotlib.pyplot as plt
+
+A = pd.read_csv('108N1.csv')
+#df_otc = pd.read_csv('108_otc.csv')
+headers = ['industry','company_code', 'company_name',  'company_people_count','average_salary2019', 'average_salary2018', 'company_eps']
+A.columns = headers
+''' 以下是看一些資料
+A.shape
+A.values
+A.columns
+A.info() '''
+
+#查詢不同產業 薪資排名 (2019)
+Sa2019=A.groupby('industry').average_salary2019.mean().sort_values(ascending=False).rename('Salary_mean')
+#Sa2019=A.groupby('industry').average_salary2019.mean().sort_values(ascending=False).rename('Salary_mean').head(10)
+
+#查詢公司 薪資排名 (2019)
+#A.sort_values(['average_salary2019']).head(10)
+#A.sort_values(['average_salary2019'],ascending=False).head(10)
+
+#查詢各產業 人員與薪資資訊
+#A.groupby('industry').company_people_count.describe()
+#A.groupby('industry').average_salary2019.describe()
+
+#不同產業的平均 最大與最小
+#A.groupby('industry').average_salary2019.agg(['mean', 'max', 'min'])
+''' 中国的啤酒消费在亚洲和全球的排名
+china_beer = drinks[drinks.country == 'China'].beer_servings.iloc[0]
+print ('中国啤酒消费量: ', china_beer)
+print ('中国啤酒消费在亚洲排名: ', (drinks[drinks.continent == 'AS'].beer_servings > china_beer).sum()+1, '/', drinks[drinks.continent == 'AS'].beer_servings.count())
+print ('中国啤酒消费在全球排名: ', (drinks['beer_servings'] > china_beer).sum()+1 , '/', drinks['beer_servings'].count())'''
+
+#畫圖 前10大薪資2018 與2019年薪資差異 長條圖
+ASem = A[A['industry'].isin(['半導體業'])].head(10)
+Ax=ASem['company_code'] #長條圖的x軸
+Ay1=ASem['average_salary2019'] #長條圖的y1軸
+Ay2=ASem['average_salary2018'] #長條圖的y2軸
+Ay2 = Ay2.astype('int64')
+#ASem.average_salary2019 = pd.to_numeric(ASem.average_salary2019)
+#ASem.loc[:, ['company_code', 'average_salary2019']].plot(kind='bar', x='company_code', y='average_salary2019', title ="Salary_Semiconductor", figsize=(15, 10), legend=True, fontsize=12)
+
+width=2
+plt.xlabel('Company_code')
+plt.ylabel('average_salary')
+plt.title('Semiconductor_salary')
+plt.bar([i-width/2 for i in Ax], Ay1, width=width, label='2019')
+plt.bar([i-width/2 for i in Ax], Ay2, width=width, label='2018')
+plt.legend()
+plt.show()
+
+#ZZ = A[A['industry'].isin(['觀光業'])].head(10)
+#ZX=ZZ['company_code']
+#ZZ.average_salary2019 = pd.to_numeric(AA.average_salary2019)
+
+#ZZ.loc[:, ['company_code', 'average_salary2019']].plot(kind='bar', x='company_code', y='average_salary2019', title ="Salary_Semiconductor", figsize=(15, 10), legend=True, fontsize=12)
+
+'''ASem = A[A['industry'].isin(['半導體業'])].head(10)
+AX=ASem['company_code']
+ASem.average_salary2019 = pd.to_numeric(ASem.average_salary2019)
+ASem.loc[:, ['company_code', 'average_salary2019']].plot(kind='bar', x='company_code', y='average_salary2019', title ="Salary_Semiconductor", figsize=(15, 10), legend=True, fontsize=12)'''
+
+
+#畫圖 前10大薪資2019年薪資差異 圓餅圖
+'''
+A.sort_values(['company_eps'], ascending=False).head(5)
+A.drop(A.index[54])
+
+A.plot(kind='scatter', x='company_eps', y='company_average_salary')'''
