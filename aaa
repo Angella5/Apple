@@ -1,0 +1,15 @@
+import matplotlib.pyplot as plt
+ASem = A[A['industry'].isin(['半導體業'])].head(10)
+Ax=['Nova','L','C','D','E','F','G','H','I','J'] #長條圖的x軸
+Ay1=ASem['average_salary2019'] #長條圖的y1軸
+Ay2=ASem['average_salary2018'] #長條圖的y2軸
+Ay2 = Ay2.astype('int64')
+
+plt.plot(Ax, Ay1, 'r*--', label='average_salary2019')
+plt.plot(Ax, Ay2, 'b*--', label='average_salary2018')
+plt.xlabel('Company_name')
+plt.ylabel('Salary(USD)')
+#plt.xticks(Ax,rotation='vertical') 
+plt.title('Top10 Semi.company Salary')
+plt.legend(loc = 'upper right')
+plt.show()
